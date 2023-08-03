@@ -10,6 +10,7 @@ from sklearn.model_selection import StratifiedShuffleSplit, \
     StratifiedKFold, \
     KFold, \
     PredefinedSplit
+from sklearn.model_selection import *
 from sklearn.metrics import accuracy_score, r2_score
 
 import numpy as np
@@ -137,18 +138,13 @@ def _cost_fn(argd,
         if n_folds is not None:
             if n_folds == -1:
                 info("Will use leave-one-out CV")
-                cv_iter = LeaveOneOut().split(X)
+                cv_iter = TimeSeriesSplit(2).split(X)
             elif is_classif:
                 info(f"Will use stratified K-fold CV with K: {n_folds} and Shuffle: {shuffle}")
-                cv_iter = StratifiedKFold(n_splits=n_folds,
-                                          shuffle=shuffle,
-                                          random_state=random_state_sklearn
-                                          ).split(X, y)
+                cv_iter = TimeSeriesSplit(2).split(X, y)
             else:
                 info(f"Will use K-fold CV with K: {n_folds} and Shuffle: {shuffle}")
-                cv_iter = KFold(n_splits=n_folds,
-                                shuffle=shuffle,
-                                random_state=random_state_sklearn).split(X)
+                cv_iter = TimeSeriesSplit(2).split(X)
         else:
             if not shuffle:  # always choose the last samples.
                 info(f"Will use the last {valid_size} portion of samples for validation")
